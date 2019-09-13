@@ -40,7 +40,20 @@ fn main() {
 	img.save("output.png").expect("Failed to save output image");
 }
 
+fn hit_sphere(center:&Vec3, radius:f32, r:&Ray)->bool{
+	let oc = r.origin - *center;
+	let a = r.direction.dot(r.direction);
+	let b = 2. * oc.dot(r.direction);
+	let c = oc.dot(oc) - 2. * radius * radius;
+	let discriminant = b * b - 4. * a * c;
+	return (discriminant > 0.0);
+}
+
 fn color(r:Ray)-> Vec3{
+	let t = hit_sphere(&Vec3::new(0., 0., -1.), 0.5, &r);
+	if t {
+		return Vec3::new(1.0, 0.0 , 0.0);
+	}
 	let unit_direction = unit_vector(r.direction);
 	let t = 0.5*(unit_direction.y() + 1.0);
 	(1.0-t)*Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
